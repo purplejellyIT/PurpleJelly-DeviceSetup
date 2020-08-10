@@ -624,7 +624,7 @@ function RestartPC{
     Write-Host "Press any key to restart your system..." -ForegroundColor Black -BackgroundColor White
     $key = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     Write-Host "Restarting... in 5 Minuets"
-    shutdown -r -f -t 300 -c "Automatic Restart"
+    shutdown -r -f -t 300 -c "Automatic Restart in 5 mins"
 }
 
 InstallChoco
