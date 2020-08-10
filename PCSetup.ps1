@@ -711,10 +711,6 @@ $ForceRip = $False                                  # Force Agent Uninstall / In
   }
 }
 
-function SetDefultProfile {
-start-process "cmd.exe" "/c c:\PurpleJelly\PurpleJelly-DeviceSetup-master\SetDefultProfile.bat"
-}
-
 function RestartPC{
     ##########
     # Restart
@@ -732,5 +728,4 @@ LayoutDesign
 ReclaimWindows10
 IntechPower
 AutomateInstall
-SetDefultProfile
 RestartPC
