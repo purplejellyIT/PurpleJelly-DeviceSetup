@@ -786,4 +786,6 @@ SetPCName
 LayoutDesign
 ReclaimWindows10
 IntechPower
+AutomateInstall
+SetDefultProfile
 RestartPC
