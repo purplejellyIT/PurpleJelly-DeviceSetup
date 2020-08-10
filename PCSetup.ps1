@@ -612,6 +612,7 @@ function IntechPower {
 }
 
 function AutomateInstall{
+$args = @("/s")
 Start-Process -Filepath "c:\PurpleJelly\PurpleJelly-DeviceSetup-master\Agent_Install.exe" -ArgumentList $args
 }
 
