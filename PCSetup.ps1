@@ -2,7 +2,7 @@ Set-ExecutionPolicy remotesigned
 function SetPCName {
     Add-Type -AssemblyName Microsoft.VisualBasic
     $DeviceType = [Microsoft.VisualBasic.Interaction]::InputBox('Enter Device Type (LT or DT)', 'Device Type')
-    $CompanyName = [Microsoft.VisualBasic.Interaction]::InputBox('Enter Company Initials (Max 4 letters)', 'Company Initials')
+    $CompanyName = [Microsoft.VisualBasic.Interaction]::InputBox('Enter Company Initials', 'Company Initials')
     $DeviceNumber = [Microsoft.VisualBasic.Interaction]::InputBox('Enter The Device Number', 'Device Number')
     Write-Output "The Device Number is $DeviceNumber"
     Write-Output "$DeviceType-$CompanyName-$DeviceNumber"
@@ -343,12 +343,12 @@ function ReclaimWindows10 {
     # Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "LaunchTo"
 
     # Show Computer shortcut on desktop
-    # Write-Host "Showing Computer shortcut on desktop..."
-    # If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu")) {
-    #   New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu" | Out-Null
-    # }
-    # Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu" -Name "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" -Type DWord -Value 0
-    # Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" -Name "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" -Type DWord -Value 0
+    Write-Host "Showing Computer shortcut on desktop..."
+    If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu")) {
+      New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu" | Out-Null
+    }
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu" -Name "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" -Type DWord -Value 0
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" -Name "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" -Type DWord -Value 0
 
     # Hide Computer shortcut from desktop
     # Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu" -Name "{20D04FE0-3AEA-1069-A2D8-08002B30309D}"
@@ -473,25 +473,25 @@ function ReclaimWindows10 {
     Get-AppxPackage "Microsoft.Getstarted" | Remove-AppxPackage
     Get-AppxPackage "Microsoft.MicrosoftOfficeHub" | Remove-AppxPackage
     Get-AppxPackage "Microsoft.MicrosoftSolitaireCollection" | Remove-AppxPackage
-    # Get-AppxPackage "Microsoft.Office.OneNote" | Remove-AppxPackage
+    Get-AppxPackage "Microsoft.Office.OneNote" | Remove-AppxPackage
     Get-AppxPackage "Microsoft.People" | Remove-AppxPackage
-    # Get-AppxPackage "Microsoft.SkypeApp" | Remove-AppxPackage
+    Get-AppxPackage "Microsoft.SkypeApp" | Remove-AppxPackage
     Get-AppxPackage "Microsoft.Windows.Photos" | Remove-AppxPackage
     Get-AppxPackage "Microsoft.WindowsAlarms" | Remove-AppxPackage
-    # Get-AppxPackage "Microsoft.WindowsCamera" | Remove-AppxPackage
-    # Get-AppxPackage "microsoft.windowscommunicationsapps" | Remove-AppxPackage
+    Get-AppxPackage "Microsoft.WindowsCamera" | Remove-AppxPackage
+    Get-AppxPackage "microsoft.windowscommunicationsapps" | Remove-AppxPackage
     Get-AppxPackage "Microsoft.WindowsMaps" | Remove-AppxPackage
     Get-AppxPackage "Microsoft.WindowsPhone" | Remove-AppxPackage
-    # Get-AppxPackage "Microsoft.WindowsSoundRecorder" | Remove-AppxPackage
+    Get-AppxPackage "Microsoft.WindowsSoundRecorder" | Remove-AppxPackage
     Get-AppxPackage "Microsoft.XboxApp" | Remove-AppxPackage
     Get-AppxPackage "Microsoft.ZuneMusic" | Remove-AppxPackage
     Get-AppxPackage "Microsoft.ZuneVideo" | Remove-AppxPackage
-    # Get-AppxPackage "Microsoft.AppConnector" | Remove-AppxPackage
-    # Get-AppxPackage "Microsoft.ConnectivityStore" | Remove-AppxPackage
-    # Get-AppxPackage "Microsoft.Office.Sway" | Remove-AppxPackage
-    # Get-AppxPackage "Microsoft.Messaging" | Remove-AppxPackage
-    # Get-AppxPackage "Microsoft.CommsPhone" | Remove-AppxPackage
-    # Get-AppxPackage "9E2F88E3.Twitter" | Remove-AppxPackage
+    Get-AppxPackage "Microsoft.AppConnector" | Remove-AppxPackage
+    Get-AppxPackage "Microsoft.ConnectivityStore" | Remove-AppxPackage
+    Get-AppxPackage "Microsoft.Office.Sway" | Remove-AppxPackage
+    Get-AppxPackage "Microsoft.Messaging" | Remove-AppxPackage
+    Get-AppxPackage "Microsoft.CommsPhone" | Remove-AppxPackage
+    Get-AppxPackage "9E2F88E3.Twitter" | Remove-AppxPackage
     Get-AppxPackage "king.com.CandyCrushSodaSaga" | Remove-AppxPackage
     Get-AppxPackage "king.com.CandyCrushSaga" | Remove-AppxPackage
     Get-AppxPackage "king.com.CandyCrushFriends" | Remove-AppxPackage
