@@ -616,10 +616,9 @@ function AutomateInstall{
 #timeout=900000
 #maxlength=9000000
 Add-Type -AssemblyName Microsoft.VisualBasic
-$DeviceType = [Microsoft.VisualBasic.Interaction]::InputBox('Enter Device Type (LT or DT)', 'Device Type')
 $FQDN = 'purplejelly.hostedrmm.com'                   # Enter Automate Server FQDN - Example: 'company.hostedrmm.com' - Leave out HTTP:\\ or HTTPS:\\
 $LocationID = [Microsoft.VisualBasic.Interaction]::InputBox('Enter the Location ID', 'LocationID')      # Enter Location ID to place the computer in assigned Client's Location (Location ID '1' = New Computers)
-$SoftwarePath = "C:\Support\Automate"                # Enter Software Path in order to download the files to - Example: "C:\Support\Automate"
+$SoftwarePath = "C:\PurpleJelly"                # Enter Software Path in order to download the files to - Example: "C:\Support\Automate"
 $ForceRip = $False                                  # Force Agent Uninstall / Install even if agent is already installed and checking into your server ($True or $False)
 & {
     Start-Transcript -Path "$($env:windir)\Temp\AutomateLogon.txt" -Force
@@ -727,5 +726,4 @@ SetPCName
 LayoutDesign
 ReclaimWindows10
 IntechPower
-AutomateInstall
 RestartPC
