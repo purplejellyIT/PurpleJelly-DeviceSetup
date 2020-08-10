@@ -16,7 +16,7 @@ function InstallChoco {
         Exit
     }    
     Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-    choco install adobereader 7zip microsoft-edge -y
+    choco install adobereader 7zip microsoft-edge googlechrome firefox -y
     choco install microsoft-office-deployment --params="'/Channel:Monthly /Language:en-us /64bit /Product:O365BusinessRetail /Exclude:Lync,Groove'" -y
 }
 
@@ -608,6 +608,106 @@ function IntechPower {
     POWERCFG -CHANGE -standby-timeout-dc 30
     POWERCFG -CHANGE -hibernate-timeout-ac 0
     POWERCFG -CHANGE -hibernate-timeout-dc 0
+}
+
+function AutomateInstall{
+#!ps
+#timeout=900000
+#maxlength=9000000
+Add-Type -AssemblyName Microsoft.VisualBasic
+$DeviceType = [Microsoft.VisualBasic.Interaction]::InputBox('Enter Device Type (LT or DT)', 'Device Type')
+$FQDN = 'purplejelly.hostedrmm.com'                   # Enter Automate Server FQDN - Example: 'company.hostedrmm.com' - Leave out HTTP:\\ or HTTPS:\\
+$LocationID = [Microsoft.VisualBasic.Interaction]::InputBox('Enter the Location ID', 'LocationID')      # Enter Location ID to place the computer in assigned Client's Location (Location ID '1' = New Computers)
+$SoftwarePath = "C:\Support\Automate"                # Enter Software Path in order to download the files to - Example: "C:\Support\Automate"
+$ForceRip = $False                                  # Force Agent Uninstall / Install even if agent is already installed and checking into your server ($True or $False)
+& {
+    Start-Transcript -Path "$($env:windir)\Temp\AutomateLogon.txt" -Force
+    if (([int]((Get-WmiObject Win32_OperatingSystem).BuildNumber) -gt 6000)) {$AutomateURL = "https://$($FQDN)"} else {$AutomateURL = "http://$($FQDN)"}
+    $AutomateSrvAddrReg = (Get-ItemProperty "HKLM:\SOFTWARE\LabTech\Service" -ErrorAction SilentlyContinue).'Server Address'
+    $AutomateCompIDReg = (Get-ItemProperty "HKLM:\SOFTWARE\LabTech\Service" -ErrorAction SilentlyContinue).ID
+    if (($AutomateSrvAddrReg -like "*$($FQDN)*") -and ($AutomateCompIDReg -ne $null) -and ($ForceRip -ne $True)) {
+        Start-Service ltservice,ltsvcmon
+        Write-Host ""
+        Write-Host "The Automate Agent is already installed." -ForegroundColor Green
+        Write-Host "The Automate Agent is checking-in to: $($AutomateSrvAddrReg)" -ForegroundColor Green
+        Write-Host "ComputerID: $($AutomateCompIDReg)" -ForegroundColor Green 
+        Write-Host " "
+        } else {
+    # Remove Existing Automate Agent
+        if (Test-Path "$($env:windir)\ltsvc") {
+        $DownloadPath = "https://s3.amazonaws.com/assets-cp/assets/Agent_Uninstall.exe"
+        $Filename = [System.IO.Path]::GetFileName($DownloadPath)
+        $SoftwareFullPath = "$($SoftwarePath)\$Filename"
+        $wc = New-Object System.Net.WebClient
+        if (!(Test-Path $SoftwarePath)) {md $SoftwarePath}
+        Set-Location $SoftwarePath
+        if ((Test-Path $SoftwareFullPath)) {Remove-Item $SoftwareFullPath}
+        $wc.DownloadFile($DownloadPath, $SoftwareFullPath)
+        Write-Host "Removing existing Automate Agent..."
+        Stop-Process -Name "ltsvcmon","lttray","ltsvc","ltclient" -Force -PassThru -ErrorAction SilentlyContinue
+        Stop-Service ltservice,ltsvcmon -Force -ErrorAction SilentlyContinue
+        $UninstallExitCode = (Start-Process "cmd" -ArgumentList "/c $($SoftwareFullPath)" -NoNewWindow -Wait -PassThru).ExitCode
+        if ($UninstallExitCode -eq 0) {
+            Write-Host " "
+            Write-Host "The Automate Agent Uninstaller Executed Without Errors" -ForegroundColor Green
+            } else {
+                Write-Host " "
+                Write-Host "Automate Uninstall Exit Code: $($UninstallExitCode)" -ForegroundColor Red}
+            Start-Sleep 30
+            Write-Host " "
+        if (Test-Path "$($env:windir)\ltsvc\lterrors.txt") {
+            Write-Host "  still waiting..." -ForegroundColor Gray
+            Start-Sleep 90}
+        if (Test-Path "$($env:windir)\ltsvc\lterrors.txt") {
+            Write-Host "$($env:windir)\LTSVC folder still exists" -ForegroundColor Red
+            } else {
+                Write-Host "The Automate Agent Uninstalled Successfully" -ForegroundColor Green
+                Write-Host " "
+            }}
+    # Install Automate Agent
+        $DownloadPath2 = "$($AutomateURL)/Labtech/Deployment.aspx?Probe=1&installType=msi&MSILocations=$($LocationID)"
+        $Filename2 = "Automate_Agent.msi"
+        $SoftwareFullPath2 = "$SoftwarePath\$Filename2"
+        if (!(Test-Path $SoftwarePath)) {New-Item $SoftwarePath}
+        Set-Location $SoftwarePath
+        if ((Test-Path $SoftwareFullPath2)) {Remove-Item $SoftwareFullPath2}
+        $wc = New-Object System.Net.WebClient
+        $wc.DownloadFile($DownloadPath2, $SoftwareFullPath2)
+        Write-Host "Installing Automate Agent on $($AutomateURL)"
+        Stop-Process -Name "ltsvcmon","lttray","ltsvc","ltclient" -Force -PassThru -ErrorAction SilentlyContinue
+        $InstallExitCode = (Start-Process "msiexec.exe" -ArgumentList "/i $($SoftwareFullPath2) /quiet /norestart LOCATION=$($LocationID)" -NoNewWindow -Wait -PassThru).ExitCode
+        if ($InstallExitCode -eq 0) {Write-Host "The Automate Agent Installer Executed Without Errors" -ForegroundColor Green
+        } else {
+            Write-Host "Automate Installer Exit Code: $($InstallExitCode)" -ForegroundColor Red
+            Start-Sleep -s 15
+            # Installer will execute twice (KI 12002617)
+            (Start-Process "msiexec.exe" -ArgumentList "/i $($SoftwareFullPath2) /quiet /norestart LOCATION=$($LocationID)" -NoNewWindow -Wait -PassThru).ExitCode
+            }
+        Write-Host "Waiting 2 minute for Automate Agent to check-in..." -ForegroundColor Gray
+        Start-Sleep -s 120
+        Write-Host "Checking Automate Services..." -ForegroundColor Yellow
+        Start-Service ltservice,ltsvcmon -PassThru
+        $AutomateSrvAddrReg = (Get-ItemProperty "HKLM:\SOFTWARE\LabTech\Service" -ErrorAction SilentlyContinue).'Server Address'
+        $AutomateCompIDReg = (Get-ItemProperty "HKLM:\SOFTWARE\LabTech\Service" -ErrorAction SilentlyContinue).ID
+            if (($AutomateSrvAddrReg -like "*$($FQDN)*") -and ($AutomateCompIDReg -ne $null)) {
+            Write-Host " "
+            Write-Host "The Automate Agent is checking-in to:" -ForegroundColor Green
+            Write-Host "$($AutomateSrvAddrReg)" -ForegroundColor Green
+            Write-Host "ComputerID: $($AutomateCompIDReg)" -ForegroundColor Green 
+            Write-Host " "
+            } else {
+                Write-Host " "
+                Write-Host "The Automate Agent is NOT installed and/or checking-in" -ForegroundColor Red
+                Write-Host "Server Address: $($AutomateSrvAddrReg)" -ForegroundColor Yellow
+                Write-Host "ComputerID: $($AutomateCompIDReg)" -ForegroundColor Yellow
+                Write-Host " "
+            }}
+  # Enable below to write all variables to transcript - intended for logon scripts
+  # Get-Variable * | select -Property Name,Value | fl
+  # Get-ChildItem env: | fl
+  Stop-Transcript 
+  # $Error
+  }
 }
 
 function RestartPC{
