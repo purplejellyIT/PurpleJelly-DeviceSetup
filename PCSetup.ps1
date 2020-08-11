@@ -1,12 +1,8 @@
 Set-ExecutionPolicy remotesigned
 function SetPCName {
     Add-Type -AssemblyName Microsoft.VisualBasic
-    $DeviceType = [Microsoft.VisualBasic.Interaction]::InputBox('Enter Device Type (LT or DT)', 'Device Type')
-    $CompanyName = [Microsoft.VisualBasic.Interaction]::InputBox('Enter Company Initials', 'Company Initials')
-    $DeviceNumber = [Microsoft.VisualBasic.Interaction]::InputBox('Enter The Device Number', 'Device Number')
-    Write-Output "The Device Number is $DeviceNumber"
-    Write-Output "$DeviceType-$CompanyName-$DeviceNumber"
-    Rename-Computer -NewName "$CompanyName-$DeviceType-$DeviceNumber"
+    $ComputerName = [Microsoft.VisualBasic.Interaction]::InputBox('Enter desired Computer Name', 'Computer Name')
+    Rename-Computer -NewName "$ComputerName"
 }
 
 function InstallChoco {
