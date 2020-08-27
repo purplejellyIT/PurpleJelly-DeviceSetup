@@ -625,8 +625,8 @@ function RestartPC{
     shutdown -r -f -t 300 -c "Automatic Restart in 5 mins"
 }
 
-InstallChoco
 SetPCName
+InstallChoco
 LayoutDesign
 ReclaimWindows10
 IntechPower
