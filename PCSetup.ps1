@@ -615,14 +615,6 @@ $args = @("/s")
 Start-Process -Filepath "c:\PurpleJelly\PurpleJelly-DeviceSetup-master\Agent_Install.exe" -ArgumentList $args
 }
 
-function ConfigureVPN{
-Add-Type -AssemblyName Microsoft.VisualBasic
-$VPNConnectonName = [Microsoft.VisualBasic.Interaction]::InputBox('Enter a VPN Connect Name', 'VPN Name', "$env:VPNConnectonName")
-Add-Type -AssemblyName Microsoft.VisualBasic
-$ServerAddress = [Microsoft.VisualBasic.Interaction]::InputBox('Enter the Server Address', 'Server Address', "$env:VPNServerAddress")
-Add-VpnConnection -Name $VPNConnectonName -ServerAddress $ServerAddress -AllUserConnection $true -SplitTunneling $true -AuthenticationMethod MSChapv2 -TunnelType Automatic -EncryptionLevel Required -PassThru
-}
-
 function DisableFastStartup{
 powercfg -h off
 REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /V HiberbootEnabled /T REG_dWORD /D 0 /F
@@ -652,6 +644,5 @@ ReclaimWindows10
 IntechPower
 DisableFastStartup
 PoolTimeSync
-ConfigureVPN
 AutomateInstall
 RestartPC
