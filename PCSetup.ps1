@@ -631,9 +631,7 @@ function RestartPC{
     # Restart
     ##########
     Write-Host
-    Write-Host "Press any key to restart your system..." -ForegroundColor Black -BackgroundColor White
-    $key = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-    Write-Host "Restarting... in 5 Minuets"
+    Write-Host "Restarting... in 5 Minuets" -ForegroundColor Black -BackgroundColor White
     shutdown -r -f -t 300 -c "Automatic Restart in 5 mins"
 }
 
