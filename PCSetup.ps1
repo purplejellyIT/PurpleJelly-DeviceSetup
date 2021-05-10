@@ -626,14 +626,11 @@ w32tm /config /update
 w32tm /resync
 }
 
-function RestartPC{
-    ##########
-    # Restart
-    ##########
-    Write-Host
-    Write-Host "Restarting... in 5 Minuets" -ForegroundColor Black -BackgroundColor White
-    shutdown -r -f -t 300 -c "Automatic Restart in 5 mins"
+function Bitlocker{
+Start-Process "cmd.exe" "/c C:\PurpleJelly\PurpleJelly-DeviceSetup-master\BitlokerConfigurator.bat"
 }
+
+
 
 SetPCName
 InstallChoco
@@ -643,4 +640,5 @@ IntechPower
 DisableFastStartup
 PoolTimeSync
 AutomateInstall
-RestartPC
+Bitlocker
+
