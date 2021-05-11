@@ -13,7 +13,7 @@ function InstallChoco {
     }    
     Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
     choco install adobereader 7zip microsoft-edge googlechrome firefox -y
-    choco install microsoft-office-deployment --params="'/Channel:Monthly /Language:en-us /64bit /Product:O365BusinessRetail /Exclude:Lync,Groove'" -y
+    #choco install microsoft-office-deployment --params="'/Channel:Monthly /Language:en-us /64bit /Product:O365BusinessRetail /Exclude:Lync,Groove'" -y
 }
 
 function ReclaimWindows10 {
@@ -639,6 +639,6 @@ ReclaimWindows10
 IntechPower
 DisableFastStartup
 PoolTimeSync
-AutomateInstall
+#AutomateInstall
 Bitlocker
 
