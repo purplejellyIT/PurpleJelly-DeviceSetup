@@ -12,7 +12,7 @@ echo Creating the TPM key (used to auto boot encrypted OS)
 powershell.exe -Command "manage-bde.exe -protectors -add %SystemDrive% -tpm >> C:\PurpleJelly\%computername%_bitlockerlog.txt"
 echo Enabling BitLocker Encryption
 powershell.exe -Command "manage-bde.exe -on %systemdrive% >> C:\PurpleJelly\%computername%_bitlockerlog.txt"
-shutdown /r /f /t 300 /c "PC will restart in 300 Seconds, to start the Encryption Process...."
+shutdown /r /f /t 300 /c "PC will restart in 300 Seconds, please allow to Auto restart for Automate to insatll, Encryption will commence on teh reboot...."
 
 
 
