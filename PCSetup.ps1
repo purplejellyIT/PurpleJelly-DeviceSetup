@@ -630,6 +630,9 @@ function Bitlocker{
 Start-Process "cmd.exe" "/c C:\PurpleJelly\PurpleJelly-DeviceSetup-master\BitlokerConfigurator.bat"
 }
 
+function Reboot{
+shutdown -r -f -t 300 -c "Automatic Restart in 5 mins"
+}
 
 
 SetPCName
@@ -640,5 +643,6 @@ IntechPower
 DisableFastStartup
 PoolTimeSync
 AutomateInstall
-Bitlocker
+#Bitlocker
+Reboot
 
