@@ -643,6 +643,6 @@ IntechPower
 DisableFastStartup
 PoolTimeSync
 AutomateInstall
-#Bitlocker
-Reboot
+Bitlocker
+#Reboot
 
