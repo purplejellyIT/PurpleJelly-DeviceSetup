@@ -608,12 +608,14 @@ function IntechPower {
 	powercfg -h off
 	REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /V HiberbootEnabled /T REG_dWORD /D 0 /F
 	
-}
+#}
 
-function AutomateInstall{
-$args = @("/s")
-Start-Process -Filepath "c:\PurpleJelly\PurpleJelly-DeviceSetup-master\Agent_Install.exe" -ArgumentList $args
-}
+#function AutomateInstall{
+#$args = @("/s")
+#Start-Process -Filepath "c:\PurpleJelly\PurpleJelly-DeviceSetup-master\Agent_Install.exe" -ArgumentList $args
+#}
+
+msiexec /i c:\PurpleJelly\PurpleJelly-DeviceSetup-master\Agent_Install.msi /qn /lv c:\PurpleJelly\agent_install_log.txt
 
 function DisableFastStartup{
 powercfg -h off
